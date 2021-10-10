@@ -9,8 +9,8 @@ import ssl
 ssl._create_default_https_context = ssl._create_unverified_context
 
 # define hyper-parameter
-lr = 0.01
-batchsize = 16
+lr = 0.001
+batchsize = 8
 num_iteration=100
 device='cuda'
 model_save_path='./weights/MY_CNN.pt'
@@ -33,7 +33,7 @@ classes = ('plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship'
 model=MY_CNN()
 model.to(device)
 criterion = nn.CrossEntropyLoss()
-opt = optim.Adam(model.parameters(), lr=0.001)
+opt = optim.Adam(model.parameters(), lr=lr)
 
 best_acc=0.0
 for epoch in range(num_iteration):
@@ -55,12 +55,14 @@ for epoch in range(num_iteration):
         seen+=batchsize
         correct+=pred_class.eq(labels).sum().item()
 
-        if seen/batchsize%100==0:
+        if seen/batchsize%500==0:
             print('[training] epoch:%2d, seen:%5d, loss:%.3f, accuracy:%.2f'
                   %(epoch,seen,train_loss/seen,100.0*correct/seen))
             seen=0
             train_loss=0
             correct=0
+    print('[training] epoch:%2d, seen:%5d, loss:%.3f, accuracy:%.2f'
+          % (epoch, seen, train_loss / seen, 100.0 * correct / seen))
 
     model.eval()
     test_loss = 0.0
