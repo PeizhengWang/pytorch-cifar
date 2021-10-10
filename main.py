@@ -13,7 +13,7 @@ lr = 0.001
 batchsize = 8
 num_iteration=100
 device='cuda'
-model_save_path='./weights/MY_CNN.pt'
+model_save_path='./weights/LeNet5.pt'
 # generate dataloader
 transform=transforms.Compose(
     [
