@@ -30,7 +30,7 @@ dataloader_test = DataLoader(dataset_train,batch_size=batchsize,shuffle=True,num
 classes = ('plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
 
 # define model
-model=MY_CNN()
+model=LeNet5()
 model.to(device)
 criterion = nn.CrossEntropyLoss()
 opt = optim.Adam(model.parameters(), lr=lr)
