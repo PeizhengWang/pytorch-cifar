@@ -9,28 +9,33 @@ import ssl
 ssl._create_default_https_context = ssl._create_unverified_context
 
 # define hyper-parameter
-lr = 0.001
-batchsize = 8
+lr = 0.01
+batchsize = 64
 num_iteration=100
-device='cuda'
-model_save_path='./weights/LeNet5.pt'
+device='cuda:1'
+model_save_path='./weights/vgg16.pt'
 # generate dataloader
-transform=transforms.Compose(
-    [
-        transforms.ToTensor(),
-        transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
-    ])
-dataset_train = torchvision.datasets.CIFAR10(root='./data',train=True,download=True, transform=transform)
+transform_train = transforms.Compose([
+    transforms.Resize((224,224)),
+    transforms.RandomHorizontalFlip(),
+    transforms.RandomGrayscale(),
+    transforms.ToTensor(),
+    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])])
+transform_test = transforms.Compose([
+    transforms.Resize((224,224)),
+    transforms.ToTensor(),
+    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])])
+dataset_train = torchvision.datasets.CIFAR10(root='./data',train=True,download=True, transform=transform_train)
 dataloader_train = DataLoader(dataset_train,batch_size=batchsize,shuffle=True,num_workers=4)
 
-dataset_test = torchvision.datasets.CIFAR10(root='./data',train=False,download=True, transform=transform)
+dataset_test = torchvision.datasets.CIFAR10(root='./data',train=False,download=True, transform=transform_test)
 dataloader_test = DataLoader(dataset_train,batch_size=batchsize,shuffle=True,num_workers=4)
 
 
-classes = ('plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
+# classes = ('plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
 
 # define model
-model=LeNet5()
+model=vgg16()
 model.to(device)
 criterion = nn.CrossEntropyLoss()
 opt = optim.Adam(model.parameters(), lr=lr)
